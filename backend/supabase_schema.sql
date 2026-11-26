@@ -52,6 +52,7 @@ image_url TEXT DEFAULT NULL,
 );
 
 -- Product Units Table (Multi-unit conversion)
+-- Multiple units with the same name are allowed per product.
 CREATE TABLE IF NOT EXISTS product_units (
   id SERIAL PRIMARY KEY,
   product_id INT NOT NULL REFERENCES products(id) ON DELETE CASCADE,
@@ -62,8 +63,7 @@ CREATE TABLE IF NOT EXISTS product_units (
   is_purchase_unit SMALLINT DEFAULT 1,
   is_sales_unit SMALLINT DEFAULT 1,
   price DECIMAL(10,2) DEFAULT NULL,
-  created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-  -- Multiple units with the same name are now allowed per product.
+  created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Transactions Table
