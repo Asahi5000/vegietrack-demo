@@ -1,0 +1,10 @@
+{
+  "name": "vegietrack",
+  "version": "1.0.0",
+  "description": "VegieTrack - Fruit & Vegetable Inventory Management System",
+  "private": true,
+  "scripts": {
+    "build": "cd frontend && npm install && npm run build",
+    "install-backend": "cd backend && npm install"
+  }
+}

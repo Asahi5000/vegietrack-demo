@@ -1,0 +1,8 @@
+RewriteEngine On
+RewriteBase /VegieTrack/app/
+
+# If the request is not for an existing file or directory, serve index.html
+# so React Router can handle client-side routing.
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /VegieTrack/app/index.html [L]
