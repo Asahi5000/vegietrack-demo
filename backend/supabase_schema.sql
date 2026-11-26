@@ -234,7 +234,9 @@ INSERT INTO products (sku, name, category_id, base_unit, unit, price, cost, stoc
 ON CONFLICT (sku) DO NOTHING;
 
 -- Default Product Units (Conversions)
-INSERT INTO product_units (product_id, unit, label, multiplier_to_base, is_default) VALUES
+INSERT INTO product_units (product_id, unit, label, multiplier_to_base, is_default)
+SELECT seed.product_id, seed.unit, seed.label, seed.multiplier_to_base, seed.is_default
+FROM (VALUES
 ((SELECT id FROM products WHERE sku='VEG-001'), 'kg', 'Kilogram', 1, 1),
 ((SELECT id FROM products WHERE sku='VEG-001'), 'g', 'Gram', 0.001, 0),
 ((SELECT id FROM products WHERE sku='VEG-001'), 'pack', 'Pack (500g)', 0.5, 0),
@@ -274,7 +276,16 @@ INSERT INTO product_units (product_id, unit, label, multiplier_to_base, is_defau
 ((SELECT id FROM products WHERE sku='VEG-015'), 'kg', 'Kilogram', 1, 1),
 ((SELECT id FROM products WHERE sku='VEG-015'), 'g', 'Gram', 0.001, 0),
 ((SELECT id FROM products WHERE sku='VEG-015'), 'pack', 'Pack (500g)', 0.5, 0)
-ON CONFLICT (product_id, unit) DO NOTHING;
+) AS seed(product_id, unit, label, multiplier_to_base, is_default)
+WHERE NOT EXISTS (
+  SELECT 1
+  FROM product_units existing
+  WHERE existing.product_id = seed.product_id
+    AND existing.unit = seed.unit
+    AND existing.label IS NOT DISTINCT FROM seed.label
+    AND existing.multiplier_to_base = seed.multiplier_to_base
+    AND existing.is_default IS NOT DISTINCT FROM seed.is_default
+);
 
 -- Settings
 INSERT INTO settings (setting_key, setting_value) VALUES
