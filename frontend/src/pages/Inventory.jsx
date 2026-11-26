@@ -13,6 +13,11 @@ const emptyForm = { sku: '', name: '', category_id: '', base_unit: 'kg', price: 
 
 const UNIT_OPTIONS = ['kg', 'g', 'pcs', 'piece', 'bundle', 'pack', 'box', 'sack', 'tray', 'bottle', 'can', 'liter', 'ton'];
 
+const resolveProductImage = (imageUrl) =>
+  typeof imageUrl === 'string' && imageUrl.startsWith('/images/products/')
+    ? `${import.meta.env.BASE_URL}${imageUrl.slice(1)}`
+    : imageUrl;
+
 // Cost per base unit (kg) = Cost Price (total) divided by total base kg
 // e.g. 1 pack = 10 kg, qty 1, cost 1000 -> 1000 / (1 * 10) = 100 per kg
 const computeCostPerKg = (costPrice, quantity, multiplier = 1) => {
@@ -980,7 +985,7 @@ const compressImageFile = (file) =>
                     <td className="py-2 px-4 whitespace-nowrap">
                       {p.image_url ? (
                         <img
-                          src={p.image_url}
+                          src={resolveProductImage(p.image_url)}
                           alt={p.name}
                           className="w-10 h-10 object-cover rounded-lg border border-gray-200 shadow-sm shrink-0"
                         />
@@ -1299,7 +1304,7 @@ const compressImageFile = (file) =>
                   {imagePreview ? (
                     <div className="relative">
                       <img
-                        src={imagePreview}
+                        src={resolveProductImage(imagePreview)}
                         alt="Product preview"
                         className="w-32 h-32 object-cover rounded-lg mx-auto"
                       />
@@ -1349,7 +1354,7 @@ const compressImageFile = (file) =>
               <button type="button" onClick={() => setQrProduct(null)} aria-label="Close product QR code" className="p-2 rounded-lg text-gray-500 hover:bg-gray-100"><X size={20} /></button>
             </div>
             {qrProduct.image_url && (
-              <img src={qrProduct.image_url} alt={qrProduct.name} className="w-20 h-20 object-cover rounded-lg mx-auto mb-3" />
+             <img src={resolveProductImage(qrProduct.image_url)} alt={qrProduct.name} className="w-20 h-20 object-cover rounded-lg mx-auto mb-3" />
             )}
             <img src={qrImage} alt={`QR code for ${qrProduct.name}`} className="w-56 h-56 mx-auto" />
             <p className="font-semibold text-gray-800 mt-3">{qrProduct.name}</p>
@@ -1380,7 +1385,7 @@ const compressImageFile = (file) =>
               <button type="button" onClick={() => setScannedProduct(null)} aria-label="Close scanned product details" className="p-2 rounded-lg text-gray-500 hover:bg-gray-100"><X size={20} /></button>
             </div>
             {scannedProduct.image_url ? (
-              <img src={scannedProduct.image_url} alt={scannedProduct.name} className="w-full h-48 object-cover rounded-lg mb-4" />
+             <img src={resolveProductImage(scannedProduct.image_url)} alt={scannedProduct.name} className="w-full h-48 object-cover rounded-lg mb-4" />
             ) : (
               <div className="w-full h-48 bg-gray-100 rounded-lg mb-4 flex items-center justify-center">
                 <ImagePlus size={48} className="text-gray-300" />

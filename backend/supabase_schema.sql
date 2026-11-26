@@ -233,6 +233,24 @@ INSERT INTO products (sku, name, category_id, base_unit, unit, price, cost, stoc
 ('VEG-015', 'Ginger', (SELECT id FROM categories WHERE name='Others'), 'kg', 'kg', 140.00, 90.00, 12, 5, 'active')
 ON CONFLICT (sku) DO NOTHING;
 
+-- Add local portfolio illustrations only where a product has no image already.
+UPDATE products
+SET image_url = CASE sku
+  WHEN 'VEG-001' THEN '/images/products/spinach.svg'
+  WHEN 'VEG-003' THEN '/images/products/carrots.svg'
+  WHEN 'VEG-008' THEN '/images/products/potato.svg'
+  WHEN 'VEG-011' THEN '/images/products/garlic.svg'
+  WHEN 'VEG-006' THEN '/images/products/basil.svg'
+  WHEN 'VEG-012' THEN '/images/products/broccoli.svg'
+  WHEN 'VEG-004' THEN '/images/products/tomatoes.svg'
+  WHEN 'VEG-013' THEN '/images/products/green-beans.svg'
+  WHEN 'VEG-014' THEN '/images/products/mushroom.svg'
+  WHEN 'VEG-015' THEN '/images/products/ginger.svg'
+END
+WHERE sku IN ('VEG-001', 'VEG-003', 'VEG-008', 'VEG-011', 'VEG-006',
+              'VEG-012', 'VEG-004', 'VEG-013', 'VEG-014', 'VEG-015')
+  AND NULLIF(BTRIM(image_url), '') IS NULL;
+
 -- Default Product Units (Conversions)
 INSERT INTO product_units (product_id, unit, label, multiplier_to_base, is_default)
 SELECT seed.product_id, seed.unit, seed.label, seed.multiplier_to_base, seed.is_default
